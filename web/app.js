@@ -34,7 +34,10 @@ const addDays = (iso, d) => new Date(Date.parse(iso + 'T00:00:00Z') + d * 864e5)
 async function boot() {
   try {
     const me = await fetch('/api/me');
-    if (me.status === 403) throw new Error('Acceso denegado. Revisa Cloudflare Access y las variables ACCESS_*.');
+    if (me.status === 403) {
+      const body = await me.json().catch(() => ({}));
+      throw new Error(`Acceso denegado${body.detail ? ': ' + body.detail : ''}. Revisa Cloudflare Access y las variables TEAM_DOMAIN y POLICY_AUD.`);
+    }
     const info = await me.json();
     if (!info.walletConfigured) throw new Error('Falta configurar el secreto WALLET_TOKEN en el Worker.');
     $('bootMsg').textContent = 'Cargando cuentas, categorías y etiquetas…';
