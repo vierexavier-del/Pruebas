@@ -10,6 +10,15 @@ test('acepta también los nombres de variables de Cloudflare (TEAM_DOMAIN / POLI
   await assert.rejects(verifyAccess(new Request('https://x.test'), {}), /Access no configurado/);
 });
 
+test('TEAM_DOMAIN tolera https://, rutas pegadas y espacios', async () => {
+  const { normalizeTeam } = await import('../worker/src/index.js');
+  const esperado = 'abc-123.cloudflareaccess.com';
+  assert.equal(normalizeTeam('abc-123.cloudflareaccess.com'), esperado);
+  assert.equal(normalizeTeam('  https://abc-123.cloudflareaccess.com/cdn-cgi/access/certs '), esperado);
+  assert.equal(normalizeTeam('abc-123.cloudflareaccess.com/cdn-cgi/access/certs'), esperado);
+  assert.equal(normalizeTeam(undefined), '');
+});
+
 test('lista blanca: solo lectura y creación de registros', () => {
   assert.equal(isAllowed('GET', 'accounts'), true);
   assert.equal(isAllowed('POST', 'records'), true);
@@ -33,7 +42,7 @@ async function setup() {
   return { jwk, sign };
 }
 
-const env = { ACCESS_TEAM_DOMAIN: 'team.cloudflareaccess.com', ACCESS_AUD: 'aud123', WALLET_TOKEN: 'secret-token', ASSETS: { fetch: () => new Response('asset') } };
+const env = { ACCESS_TEAM_DOMAIN: 'team.cloudflareaccess.com/cdn-cgi/access/certs', ACCESS_AUD: 'aud123', WALLET_TOKEN: 'secret-token', ASSETS: { fetch: () => new Response('asset') } };
 
 test('API: exige JWT de Access válido y reenvía con el token del servidor', async (t) => {
   const { jwk, sign } = await setup();

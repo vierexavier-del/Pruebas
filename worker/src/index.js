@@ -32,11 +32,16 @@ async function getJwks(team) {
   return keys;
 }
 
+/** Deja solo el dominio: tolera "https://", rutas como /cdn-cgi/access/certs y espacios. */
+export function normalizeTeam(value) {
+  return String(value ?? '').trim().replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
+}
+
 /** Verifica el JWT de Cloudflare Access. Devuelve el payload o lanza error. */
 export async function verifyAccess(request, env) {
   if (env.DEV_ALLOW_NO_ACCESS === '1') return { dev: true };
   // Acepta los nombres de Cloudflare (TEAM_DOMAIN, POLICY_AUD) y los propios.
-  const team = env.ACCESS_TEAM_DOMAIN || env.TEAM_DOMAIN;
+  const team = normalizeTeam(env.ACCESS_TEAM_DOMAIN || env.TEAM_DOMAIN);
   const aud = env.ACCESS_AUD || env.POLICY_AUD;
   if (!team || !aud) throw new Error('Access no configurado');
   const token = request.headers.get('Cf-Access-Jwt-Assertion');
