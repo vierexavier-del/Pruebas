@@ -25,8 +25,14 @@ let jwksCache = { at: 0, keys: null, team: null };
 
 async function getJwks(team) {
   if (jwksCache.keys && jwksCache.team === team && Date.now() - jwksCache.at < 3600_000) return jwksCache.keys;
-  const res = await fetch(`https://${team}/cdn-cgi/access/certs`);
-  if (!res.ok) throw new Error('No se pudieron obtener las claves de Access');
+  const url = `https://${team}/cdn-cgi/access/certs`;
+  let res;
+  try {
+    res = await fetch(url);
+  } catch (e) {
+    throw new Error(`No se pudieron obtener las claves de Access (${url}): ${e.message}`);
+  }
+  if (!res.ok) throw new Error(`No se pudieron obtener las claves de Access (HTTP ${res.status} en ${url})`);
   const { keys } = await res.json();
   jwksCache = { at: Date.now(), keys, team };
   return keys;
