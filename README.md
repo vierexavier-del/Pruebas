@@ -50,20 +50,19 @@ Además, lo ya subido desde este dispositivo se recuerda y no se vuelve a ofrece
 
 ## Despliegue (Cloudflare, gratis)
 
-1. **Conecta el repositorio**: Cloudflare → *Workers & Pages* → *Create* → *Import a repository*.
-   Comando de despliegue: `npx wrangler deploy --config worker/wrangler.toml`.
-2. **Token de Wallet** (secreto): en el Worker → *Settings* → *Variables and Secrets* → añade el secreto
-   `WALLET_TOKEN`. Genera un token **nuevo** en Wallet (Ajustes → REST API); no reutilices uno que
-   hayas pegado en un chat.
-3. **Protege con Cloudflare Access**: *Zero Trust* → *Access* → *Applications* → *Add* → *Self-hosted*,
-   con el dominio del Worker y una política que permita **solo tu correo** (código por email).
-4. Copia el **Application Audience (AUD) Tag** y tu dominio de equipo
-   (`tuequipo.cloudflareaccess.com`) a las variables `ACCESS_AUD` y `ACCESS_TEAM_DOMAIN`
-   (en `worker/wrangler.toml` o en el panel).
+Resumen (la guía paso a paso detallada se entregó en el chat):
+
+1. *Workers & Pages* → *Create* → *Import a repository* → elige este repositorio.
+   - Rama de producción: `claude/friendly-hopper-wfhlap` (o `main` si la fusionas).
+   - Build command: vacío. Deploy command: `npx wrangler deploy --config worker/wrangler.toml`.
+2. En el Worker → *Settings* → *Variables and Secrets*: secreto `WALLET_TOKEN` (token **nuevo** de Wallet).
+3. *Settings* → *Domains & Routes* → *Enable Cloudflare Access* en la URL `workers.dev`; ajusta la política
+   para que permita **solo tu correo**.
+4. Copia el valor `TEAM_DOMAIN` y la `POLICY_AUD` que muestra Cloudflare a *Variables and Secrets*.
 5. En el iPhone: abre la URL en Safari → *Compartir* → *Añadir a pantalla de inicio*.
 
-> Si `ACCESS_AUD` o `ACCESS_TEAM_DOMAIN` están vacíos, la API responde 403 (falla cerrado).
-> También hay que desactivar o proteger la URL `*.workers.dev` si no usas dominio propio.
+> Si `TEAM_DOMAIN` o `POLICY_AUD` faltan, la API responde 403 (falla cerrado). Las URLs de vista previa
+> están desactivadas (`preview_urls = false`).
 
 ## Desarrollo
 

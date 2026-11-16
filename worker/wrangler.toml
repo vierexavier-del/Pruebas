@@ -2,18 +2,20 @@ name = "wallet-statements"
 main = "src/index.js"
 compatibility_date = "2026-01-01"
 
-# La app estática (web/) se sirve desde el mismo Worker: mismo origen, sin CORS.
+# Las variables y secretos que pongas en el panel de Cloudflare se conservan entre despliegues.
+keep_vars = true
+
+# Acceso: solo la URL principal (workers.dev). Las URLs de vista previa quedan desactivadas.
+workers_dev = true
+preview_urls = false
+
+# La app estatica (web/) se sirve desde el mismo Worker: mismo origen, sin CORS.
 [assets]
 directory = "../web"
 binding = "ASSETS"
 run_worker_first = ["/api/*"]
 
-# Variables NO secretas. Complétalas tras crear la aplicación en Cloudflare Access:
-#   ACCESS_TEAM_DOMAIN = "tuequipo.cloudflareaccess.com"
-#   ACCESS_AUD         = "<Application Audience (AUD) Tag>"
-[vars]
-ACCESS_TEAM_DOMAIN = ""
-ACCESS_AUD = ""
-
-# Secreto (NO va en este archivo):
-#   npx wrangler secret put WALLET_TOKEN
+# Se configuran en el panel de Cloudflare (Settings > Variables and Secrets), NO aqui:
+#   Secreto : WALLET_TOKEN
+#   Variables: TEAM_DOMAIN  (ej. tuequipo.cloudflareaccess.com)
+#              POLICY_AUD   (la "AUD tag" de Cloudflare Access)

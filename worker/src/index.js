@@ -35,8 +35,9 @@ async function getJwks(team) {
 /** Verifica el JWT de Cloudflare Access. Devuelve el payload o lanza error. */
 export async function verifyAccess(request, env) {
   if (env.DEV_ALLOW_NO_ACCESS === '1') return { dev: true };
-  const team = env.ACCESS_TEAM_DOMAIN;
-  const aud = env.ACCESS_AUD;
+  // Acepta los nombres de Cloudflare (TEAM_DOMAIN, POLICY_AUD) y los propios.
+  const team = env.ACCESS_TEAM_DOMAIN || env.TEAM_DOMAIN;
+  const aud = env.ACCESS_AUD || env.POLICY_AUD;
   if (!team || !aud) throw new Error('Access no configurado');
   const token = request.headers.get('Cf-Access-Jwt-Assertion');
   if (!token) throw new Error('Falta el JWT de Access');

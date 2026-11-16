@@ -4,6 +4,12 @@ import worker, { isAllowed } from '../worker/src/index.js';
 
 const b64url = (buf) => Buffer.from(buf).toString('base64url');
 
+test('acepta también los nombres de variables de Cloudflare (TEAM_DOMAIN / POLICY_AUD)', async () => {
+  const { verifyAccess } = await import('../worker/src/index.js');
+  await assert.rejects(verifyAccess(new Request('https://x.test'), { TEAM_DOMAIN: 't.cloudflareaccess.com', POLICY_AUD: 'a' }), /Falta el JWT/);
+  await assert.rejects(verifyAccess(new Request('https://x.test'), {}), /Access no configurado/);
+});
+
 test('lista blanca: solo lectura y creación de registros', () => {
   assert.equal(isAllowed('GET', 'accounts'), true);
   assert.equal(isAllowed('POST', 'records'), true);
