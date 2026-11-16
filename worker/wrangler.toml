@@ -1,0 +1,19 @@
+name = "wallet-statements"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# La app estática (web/) se sirve desde el mismo Worker: mismo origen, sin CORS.
+[assets]
+directory = "../web"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# Variables NO secretas. Complétalas tras crear la aplicación en Cloudflare Access:
+#   ACCESS_TEAM_DOMAIN = "tuequipo.cloudflareaccess.com"
+#   ACCESS_AUD         = "<Application Audience (AUD) Tag>"
+[vars]
+ACCESS_TEAM_DOMAIN = ""
+ACCESS_AUD = ""
+
+# Secreto (NO va en este archivo):
+#   npx wrangler secret put WALLET_TOKEN

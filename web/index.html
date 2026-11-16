@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Estados">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <title>Estados a Wallet</title>
+</head>
+<body>
+  <header class="top">
+    <h1>Estados a Wallet</h1>
+    <span id="conn" class="pill">…</span>
+  </header>
+
+  <main id="app">
+    <section id="boot" class="card">
+      <p id="bootMsg">Conectando con Wallet…</p>
+    </section>
+
+    <section id="pick" class="card" hidden>
+      <h2>Sube un estado de cuenta</h2>
+      <p class="muted">PDF de Banco Guayaquil o Banco Pichincha. El PDF se lee en tu dispositivo; solo se envían a Wallet los registros que apruebes.</p>
+      <label class="btn primary file">
+        Elegir PDF
+        <input id="file" type="file" accept="application/pdf" hidden>
+      </label>
+      <p id="pickErr" class="error" hidden></p>
+      <p id="histMsg" class="muted small"></p>
+    </section>
+
+    <section id="review" hidden>
+      <div class="card">
+        <div class="row between">
+          <strong id="stmtTitle"></strong>
+          <span id="checkPill" class="pill"></span>
+        </div>
+        <p id="stmtMeta" class="muted small"></p>
+        <label class="field">
+          <span>Cuenta de Wallet</span>
+          <select id="account"></select>
+        </label>
+        <div class="row gap">
+          <button id="selPending" class="btn small">Pendientes</button>
+          <button id="selNone" class="btn small">Ninguno</button>
+          <button id="newFile" class="btn small">Otro PDF</button>
+        </div>
+      </div>
+
+      <div id="rows"></div>
+
+      <details id="excluded" class="card" hidden>
+        <summary>Excluidos (<span id="exclCount">0</span>)</summary>
+        <ul id="exclList" class="plain"></ul>
+      </details>
+      <div class="spacer"></div>
+    </section>
+  </main>
+
+  <footer id="bar" class="bar" hidden>
+    <div id="barMsg" class="small"></div>
+    <button id="upload" class="btn primary">Subir seleccionados</button>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
